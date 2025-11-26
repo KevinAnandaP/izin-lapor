@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.izinlapor.controller.AdminDashboardController">
+    <left>
+        <VBox spacing="10.0" style="-fx-background-color: #f0f0f0;" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <Label text="Menu Admin">
+                <font>
+                    <Font name="System Bold" size="14.0" />
+                </font>
+            </Label>
+            <Button maxWidth="Infinity" onAction="#handleGoToDashboard" text="Dashboard" />
+            <Button maxWidth="Infinity" onAction="#handleGoToManageReports" text="Kelola Pengaduan" />
+            <Button maxWidth="Infinity" onAction="#handleLogout" text="Keluar" />
+        </VBox>
+    </left>
+    <center>
+        <TabPane fx:id="mainTabPane" tabClosingPolicy="UNAVAILABLE" style="-fx-tab-min-height: 0; -fx-tab-max-height: 0; -fx-padding: 0;" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab fx:id="dashboardTab" text="Dashboard">
+                    <content>
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                            <content>
+                                <VBox spacing="30.0" style="-fx-background-color: #f4f4f4;">
+                                    <padding>
+                                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                                    </padding>
+
+                                    <Label text="Dashboard Overview" textFill="#333333">
+                                        <font>
+                                            <Font name="System Bold" size="28.0" />
+                                        </font>
+                                    </Label>
+
+                                    <HBox spacing="20.0">
+                                        <!-- Total Reports Card -->
+                                        <VBox spacing="10.0" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-min-width: 200;" HBox.hgrow="ALWAYS">
+                                            <Label text="Total Laporan" textFill="#666666">
+                                                <font>
+                                                    <Font size="14.0" />
+                                                </font>
+                                            </Label>
+                                            <Label fx:id="totalReportsLabel" text="0" textFill="#2196F3">
+                                                <font>
+                                                    <Font name="System Bold" size="36.0" />
+                                                </font>
+                                            </Label>
+                                            <Label text="Semua waktu" textFill="#999999" />
+                                        </VBox>
+
+                                        <!-- Processing Card -->
+                                        <VBox spacing="10.0" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-min-width: 200;" HBox.hgrow="ALWAYS">
+                                            <Label text="Sedang Diproses" textFill="#666666">
+                                                <font>
+                                                    <Font size="14.0" />
+                                                </font>
+                                            </Label>
+                                            <Label fx:id="processingReportsLabel" text="0" textFill="#FF9800">
+                                                <font>
+                                                    <Font name="System Bold" size="36.0" />
+                                                </font>
+                                            </Label>
+                                            <Label text="Perlu tindakan" textFill="#999999" />
+                                        </VBox>
+
+                                        <!-- Finished Card -->
+                                        <VBox spacing="10.0" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2); -fx-min-width: 200;" HBox.hgrow="ALWAYS">
+                                            <Label text="Selesai" textFill="#666666">
+                                                <font>
+                                                    <Font size="14.0" />
+                                                </font>
+                                            </Label>
+                                            <Label fx:id="finishedReportsLabel" text="0" textFill="#4CAF50">
+                                                <font>
+                                                    <Font name="System Bold" size="36.0" />
+                                                </font>
+                                            </Label>
+                                            <Label text="Terselesaikan" textFill="#999999" />
+                                        </VBox>
+                                    </HBox>
+                                    
+                                    <!-- Recent Activity Placeholder -->
+                                    <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);" VBox.vgrow="ALWAYS">
+                                        <Label text="Aktivitas Terbaru" textFill="#333333">
+                                             <font>
+                                                <Font name="System Bold" size="18.0" />
+                                            </font>
+                                        </Label>
+                                        <Separator style="-fx-padding: 10 0 10 0;" />
+                                        <Label text="Silakan buka tab 'Kelola Pengaduan' untuk melihat detail laporan." textFill="#666666" />
+                                    </VBox>
+                                </VBox>
+                            </content>
+                        </ScrollPane>
+                    </content>
+                </Tab>
+                <Tab fx:id="manageReportsTab" text="Kelola Pengaduan">
+                    <content>
+                        <VBox spacing="10.0">
+                            <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
+                            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                <TextField fx:id="searchField" promptText="Cari Judul / User ID..." HBox.hgrow="ALWAYS"/>
+                                <ComboBox fx:id="filterStatusComboBox" promptText="Filter Status" prefWidth="150.0"/>
+                            </HBox>
+                            <TableView fx:id="reportsTable" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="colDate" prefWidth="150.0" text="Tanggal" />
+                                    <TableColumn fx:id="colUser" prefWidth="100.0" text="User ID" />
+                                    <TableColumn fx:id="colTitle" prefWidth="200.0" text="Judul" />
+                                    <TableColumn fx:id="colStatus" prefWidth="100.0" text="Status" />
+                                </columns>
+                            </TableView>
+                            <Label text="Bukti Foto:" />
+                            <ImageView fx:id="evidenceImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+                            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                <Label text="Ubah Status:" />
+                                <ComboBox fx:id="statusComboBox" prefWidth="150.0" />
+                                <Button onAction="#handleUpdateStatus" text="Update" />
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
+</BorderPane>
