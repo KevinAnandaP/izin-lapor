@@ -1,0 +1,87 @@
+/* Global Styles */
+.root {
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-background-color: #f0f2f5;
+}
+
+/* Login Sidebar */
+.login-sidebar {
+    -fx-background-color: linear-gradient(to bottom right, #1877f2, #0d47a1);
+    -fx-padding: 40;
+}
+
+.brand-label {
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.tagline-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+/* Login Form Area */
+.login-form-container {
+    -fx-background-color: white;
+    -fx-padding: 40;
+    -fx-max-width: 400;
+}
+
+/* Headings */
+.heading-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1877f2;
+}
+
+.subheading-label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #65676b;
+}
+
+/* Text Fields */
+.text-field, .password-field {
+    -fx-background-color: #f0f2f5;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+    -fx-padding: 12;
+    -fx-font-size: 14px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #1877f2;
+    -fx-border-radius: 6;
+}
+
+/* Buttons */
+.button-primary {
+    -fx-background-color: #1877f2;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #166fe5;
+}
+
+.button-primary:pressed {
+    -fx-background-color: #1464d1;
+}
+
+/* Hyperlinks */
+.hyperlink {
+    -fx-text-fill: #1877f2;
+    -fx-font-size: 12px;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+}
+
+.hyperlink:hover {
+    -fx-underline: true;
+}

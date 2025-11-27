@@ -7,7 +7,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.FileChooser;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -19,14 +23,37 @@ public class RegisterController {
     @FXML private PasswordField passwordField;
     @FXML private TextField phoneField;
     @FXML private TextField addressField;
+    @FXML private ImageView profileImageView;
 
     private UserDAO userDAO = new UserDAO();
+    private File selectedPhoto;
+
+    @FXML
+    private void handleChoosePhoto() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Pilih Foto Profil");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
+        );
+        selectedPhoto = fileChooser.showOpenDialog(null);
+        if (selectedPhoto != null) {
+            profileImageView.setImage(new Image(selectedPhoto.toURI().toString()));
+            
+            // Circular clip
+            javafx.scene.shape.Circle clip = new javafx.scene.shape.Circle(
+                profileImageView.getFitWidth() / 2, 
+                profileImageView.getFitHeight() / 2, 
+                profileImageView.getFitWidth() / 2
+            );
+            profileImageView.setClip(clip);
+        }
+    }
 
     @FXML
     private void handleRegister() {
         if (nikField.getText().isEmpty() || fullNameField.getText().isEmpty() || 
             usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-            showAlert("Error", "Please fill in all required fields.");
+            showAlert("Error", "Harap isi semua field wajib (NIK, Nama, Username, Password).");
             return;
         }
 
@@ -38,13 +65,17 @@ public class RegisterController {
         user.setRole("WARGA");
         user.setPhone(phoneField.getText());
         user.setAddress(addressField.getText());
+        
+        if (selectedPhoto != null) {
+            user.setPhotoProfile(selectedPhoto.getAbsolutePath());
+        }
 
         try {
             if (userDAO.register(user)) {
-                showAlert("Success", "Registration successful! Please login.");
+                showAlert("Sukses", "Registrasi berhasil! Silakan login.");
                 App.setRoot("login");
             } else {
-                showAlert("Error", "Registration failed.");
+                showAlert("Error", "Registrasi gagal.");
             }
         } catch (SQLException | IOException e) {
             e.printStackTrace();

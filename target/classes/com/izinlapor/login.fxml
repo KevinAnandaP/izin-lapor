@@ -6,20 +6,33 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.izinlapor.controller.LoginController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-    <Label text="Izin Lapor - Login">
-        <font>
-            <Font size="24.0" />
-        </font>
-    </Label>
-    <TextField fx:id="usernameField" promptText="Username" />
-    <PasswordField fx:id="passwordField" promptText="Password" />
-    <Button onAction="#handleLogin" text="Login" />
-    <Hyperlink onAction="#switchToRegister" text="Belum punya akun? Daftar disini" />
-</VBox>
+<HBox xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.izinlapor.controller.LoginController">
+    <!-- Left Side: Branding -->
+    <VBox alignment="CENTER" prefWidth="320.0" styleClass="login-sidebar" HBox.hgrow="NEVER">
+        <Label styleClass="brand-label" text="Izin Lapor" />
+        <Label styleClass="tagline-label" text="Sistem Pengaduan Masyarakat" wrapText="true" textAlignment="CENTER"/>
+    </VBox>
+    
+    <!-- Right Side: Form -->
+    <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: white;">
+        <VBox alignment="CENTER" spacing="20.0" styleClass="login-form-container">
+            <VBox alignment="CENTER" spacing="5.0">
+                <Label styleClass="heading-label" text="Selamat Datang" />
+                <Label styleClass="subheading-label" text="Silakan login untuk melanjutkan" />
+            </VBox>
+            
+            <VBox spacing="15.0">
+                <TextField fx:id="usernameField" promptText="Username" />
+                <PasswordField fx:id="passwordField" promptText="Password" />
+                <Button maxWidth="Infinity" onAction="#handleLogin" styleClass="button-primary" text="Masuk" />
+            </VBox>
+            
+            <Hyperlink onAction="#switchToRegister" styleClass="hyperlink" text="Belum punya akun? Daftar disini" />
+        </VBox>
+    </StackPane>
+</HBox>
