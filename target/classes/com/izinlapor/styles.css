@@ -1,6 +1,6 @@
 /* Global Styles */
 .root {
-    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-font-family: 'Inter', 'Segoe UI', sans-serif;
     -fx-background-color: #f0f2f5;
 }
 
@@ -40,25 +40,46 @@
     -fx-text-fill: #65676b;
 }
 
-/* Text Fields */
-.text-field, .password-field {
-    -fx-background-color: #f0f2f5;
+.section-header {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+}
+
+.card-header {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666666;
+    -fx-font-weight: bold;
+}
+
+.card-value {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+}
+
+.card-subtext {
+    -fx-font-size: 12px;
+    -fx-text-fill: #999999;
+}
+
+/* Text Fields & Areas */
+.text-field, .password-field, .text-area, .combo-box {
+    -fx-background-color: white;
     -fx-background-radius: 6;
-    -fx-border-color: transparent;
-    -fx-padding: 12;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 6;
+    -fx-padding: 10;
     -fx-font-size: 14px;
 }
 
-.text-field:focused, .password-field:focused {
-    -fx-background-color: white;
+.text-field:focused, .password-field:focused, .text-area:focused, .combo-box:focused {
     -fx-border-color: #1877f2;
-    -fx-border-radius: 6;
 }
 
 /* Buttons */
-.button-primary {
-    -fx-background-color: #1877f2;
-    -fx-text-fill: white;
+.button {
+    -fx-background-color: #e4e6eb;
+    -fx-text-fill: #050505;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
     -fx-background-radius: 6;
@@ -66,12 +87,128 @@
     -fx-cursor: hand;
 }
 
+.button:hover {
+    -fx-background-color: #d8dadf;
+}
+
+.button-primary {
+    -fx-background-color: #1877f2;
+    -fx-text-fill: white;
+}
+
 .button-primary:hover {
     -fx-background-color: #166fe5;
 }
 
-.button-primary:pressed {
-    -fx-background-color: #1464d1;
+.button-success {
+    -fx-background-color: #42b72a;
+    -fx-text-fill: white;
+}
+
+.button-success:hover {
+    -fx-background-color: #36a420;
+}
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 0);
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12 20;
+    -fx-font-size: 14px;
+    -fx-text-fill: #65676b;
+    -fx-cursor: hand;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #f0f2f5;
+    -fx-text-fill: #1877f2;
+    -fx-font-weight: bold;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-padding: 20;
+}
+
+/* TableView */
+.table-view {
+    -fx-background-color: white;
+    -fx-table-cell-border-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);
+    -fx-background-radius: 8;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: white;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #eee;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #65676b;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #f0f2f5;
+    -fx-cell-size: 40px;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #f0f2f5;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #e7f3ff;
+}
+
+/* TabPane - Hide Headers */
+.tab-pane > .tab-header-area {
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+    -fx-opacity: 0;
+    -fx-padding: 0;
+    visibility: hidden;
+}
+
+.tab-pane > .tab-header-area .headers-region {
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+    -fx-min-height: 0;
+}
+
+.tab-pane > .tab-header-area .tab-header-background {
+    -fx-background-color: transparent;
+}
+
+/* Card Values Colors */
+.card-value-primary {
+    -fx-text-fill: #1877f2;
+}
+
+.card-value-warning {
+    -fx-text-fill: #f57c00; /* Darker Orange for better visibility */
+}
+
+.card-value-success {
+    -fx-text-fill: #2e7d32; /* Darker Green */
 }
 
 /* Hyperlinks */

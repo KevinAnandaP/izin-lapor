@@ -41,11 +41,17 @@
                     <Font name="System Bold" size="14.0" />
                 </font>
             </Label>
-            <Button maxWidth="Infinity" onAction="#handleGoToHome" text="Beranda" />
-            <Button maxWidth="Infinity" onAction="#handleGoToCreateReport" text="Buat Pengaduan" />
-            <Button maxWidth="Infinity" onAction="#handleGoToHistory" text="Riwayat Laporan" />
-            <Button maxWidth="Infinity" onAction="#handleGoToProfile" text="Edit Profil" />
-            <Button maxWidth="Infinity" onAction="#handleLogout" text="Keluar" />
+            
+            <VBox spacing="5.0">
+                <Button maxWidth="Infinity" onAction="#handleGoToHome" text="Beranda" />
+                <Button maxWidth="Infinity" onAction="#handleGoToCreateReport" text="Buat Pengaduan" />
+                <Button maxWidth="Infinity" onAction="#handleGoToHistory" text="Riwayat Laporan" />
+                <Button maxWidth="Infinity" onAction="#handleGoToProfile" text="Edit Profil" />
+            </VBox>
+            
+            <VBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
+                <Button maxWidth="Infinity" onAction="#handleLogout" text="Keluar" />
+            </VBox>
         </VBox>
     </left>
     <center>

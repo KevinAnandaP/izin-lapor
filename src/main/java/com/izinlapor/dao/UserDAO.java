@@ -73,4 +73,36 @@ public class UserDAO {
             return pstmt.executeUpdate() > 0;
         }
     }
+
+    public java.util.List<User> getAllUsers() throws SQLException {
+        java.util.List<User> users = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM users ORDER BY full_name ASC";
+        try (Connection conn = DBUtil.getConnection();
+             java.sql.Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                users.add(new User(
+                    rs.getInt("id"),
+                    rs.getString("nik"),
+                    rs.getString("full_name"),
+                    rs.getString("username"),
+                    rs.getString("password"),
+                    rs.getString("role"),
+                    rs.getString("phone"),
+                    rs.getString("address"),
+                    rs.getString("photo_profile")
+                ));
+            }
+        }
+        return users;
+    }
+
+    public boolean deleteUser(int userId) throws SQLException {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            return pstmt.executeUpdate() > 0;
+        }
+    }
 }
