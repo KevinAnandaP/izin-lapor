@@ -9,18 +9,20 @@ public class Report {
     private String content;
     private String photoPath;
     private String status;
+    private String response;
     private Timestamp createdAt;
     private Timestamp updatedAt;
 
     public Report() {}
 
-    public Report(int id, int userId, String title, String content, String photoPath, String status, Timestamp createdAt, Timestamp updatedAt) {
+    public Report(int id, int userId, String title, String content, String photoPath, String status, String response, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.userId = userId;
         this.title = title;
         this.content = content;
         this.photoPath = photoPath;
         this.status = status;
+        this.response = response;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -42,6 +44,9 @@ public class Report {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public String getResponse() { return response; }
+    public void setResponse(String response) { this.response = response; }
 
     public Timestamp getCreatedAt() { return createdAt; }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }

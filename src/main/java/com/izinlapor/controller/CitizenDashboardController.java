@@ -49,6 +49,7 @@ public class CitizenDashboardController {
     @FXML private TableColumn<Report, String> colTitle;
     @FXML private TableColumn<Report, String> colStatus;
     @FXML private ImageView historyImageView;
+    @FXML private TextArea responseArea;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> filterStatusComboBox;
 
@@ -206,19 +207,25 @@ public class CitizenDashboardController {
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         
         historyTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null && newSelection.getPhotoPath() != null) {
-                try {
-                    File file = new File(newSelection.getPhotoPath());
-                    if (file.exists()) {
-                        historyImageView.setImage(new Image(file.toURI().toString()));
-                    } else {
+            if (newSelection != null) {
+                responseArea.setText(newSelection.getResponse());
+                if (newSelection.getPhotoPath() != null) {
+                    try {
+                        File file = new File(newSelection.getPhotoPath());
+                        if (file.exists()) {
+                            historyImageView.setImage(new Image(file.toURI().toString()));
+                        } else {
+                            historyImageView.setImage(null);
+                        }
+                    } catch (Exception e) {
                         historyImageView.setImage(null);
                     }
-                } catch (Exception e) {
+                } else {
                     historyImageView.setImage(null);
                 }
             } else {
                 historyImageView.setImage(null);
+                responseArea.clear();
             }
         });
     }

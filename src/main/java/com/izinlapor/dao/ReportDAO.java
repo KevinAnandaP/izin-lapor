@@ -50,12 +50,13 @@ public class ReportDAO {
         return reports;
     }
 
-    public boolean updateStatus(int reportId, String status) throws SQLException {
-        String sql = "UPDATE reports SET status = ? WHERE id = ?";
+    public boolean updateStatus(int reportId, String status, String response) throws SQLException {
+        String sql = "UPDATE reports SET status = ?, response = ? WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, status);
-            pstmt.setInt(2, reportId);
+            pstmt.setString(2, response);
+            pstmt.setInt(3, reportId);
             return pstmt.executeUpdate() > 0;
         }
     }
@@ -68,6 +69,7 @@ public class ReportDAO {
             rs.getString("content"),
             rs.getString("photo_path"),
             rs.getString("status"),
+            rs.getString("response"),
             rs.getTimestamp("created_at"),
             rs.getTimestamp("updated_at")
         );

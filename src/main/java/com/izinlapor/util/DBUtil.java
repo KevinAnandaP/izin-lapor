@@ -52,11 +52,19 @@ public class DBUtil {
                     "content TEXT NOT NULL," +
                     "photo_path VARCHAR(255)," +
                     "status ENUM('BARU', 'DIPROSES', 'SELESAI', 'DITOLAK') NOT NULL DEFAULT 'BARU'," +
+                    "response TEXT," +
                     "created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP," +
                     "updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP," +
                     "FOREIGN KEY (user_id) REFERENCES users(id)" +
                     ")";
             stmt.executeUpdate(createReports);
+
+            // Attempt to add response column if it doesn't exist (for existing databases)
+            try {
+                stmt.executeUpdate("ALTER TABLE reports ADD COLUMN response TEXT");
+            } catch (SQLException e) {
+                // Column likely already exists, ignore
+            }
 
             // Create Activity Logs Table
             String createLogs = "CREATE TABLE IF NOT EXISTS activity_logs (" +

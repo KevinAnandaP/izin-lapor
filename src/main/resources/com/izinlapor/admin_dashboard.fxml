@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
@@ -10,6 +11,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -131,6 +133,9 @@
                             <HBox spacing="15.0" alignment="CENTER_LEFT">
                                 <TextField fx:id="searchField" promptText="Cari Judul / User ID..." prefWidth="300.0" styleClass="text-field"/>
                                 <ComboBox fx:id="filterStatusComboBox" promptText="Filter Status" prefWidth="180.0" styleClass="combo-box"/>
+                                <DatePicker fx:id="startDatePicker" promptText="Dari Tanggal" prefWidth="150.0" />
+                                <DatePicker fx:id="endDatePicker" promptText="Sampai Tanggal" prefWidth="150.0" />
+                                <Button onAction="#handleExportReports" text="Export ke CSV" style="-fx-background-color: #2e7d32; -fx-text-fill: white; -fx-font-weight: bold;"/>
                             </HBox>
 
                             <!-- Table -->
@@ -158,6 +163,9 @@
                                     <Separator orientation="VERTICAL" />
                                     
                                     <VBox spacing="15.0" HBox.hgrow="ALWAYS">
+                                        <Label text="Tanggapan Admin:" textFill="#65676b"/>
+                                        <TextArea fx:id="responseArea" promptText="Tulis tanggapan untuk pelapor..." prefHeight="80.0" wrapText="true" />
+                                        
                                         <Label text="Update Status Laporan:" textFill="#65676b"/>
                                         <HBox spacing="10.0" alignment="CENTER_LEFT">
                                             <ComboBox fx:id="statusComboBox" promptText="Pilih Status Baru" prefWidth="200.0" styleClass="combo-box"/>

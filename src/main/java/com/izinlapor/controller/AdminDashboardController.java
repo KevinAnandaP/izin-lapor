@@ -1,28 +1,42 @@
 package com.izinlapor.controller;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
 import com.izinlapor.App;
-import com.izinlapor.dao.ReportDAO;
 import com.izinlapor.dao.ActivityLogDAO;
+import com.izinlapor.dao.ReportDAO;
+import com.izinlapor.dao.UserDAO;
 import com.izinlapor.model.ActivityLog;
 import com.izinlapor.model.Report;
-import com.izinlapor.dao.UserDAO;
 import com.izinlapor.model.User;
 import com.izinlapor.util.SessionManager;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
-import java.io.File;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
+import javafx.stage.FileChooser;
 
 public class AdminDashboardController {
 
@@ -49,6 +63,9 @@ public class AdminDashboardController {
     @FXML private ImageView evidenceImageView;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> filterStatusComboBox;
+    @FXML private DatePicker startDatePicker;
+    @FXML private DatePicker endDatePicker;
+    @FXML private TextArea responseArea;
 
     // Users Tab
     @FXML private TableView<User> usersTable;
@@ -246,6 +263,7 @@ public class AdminDashboardController {
         reportsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 statusComboBox.setValue(newSelection.getStatus());
+                responseArea.setText(newSelection.getResponse()); // Load existing response
                 if (newSelection.getPhotoPath() != null) {
                     try {
                         File file = new File(newSelection.getPhotoPath());
@@ -262,6 +280,7 @@ public class AdminDashboardController {
                 }
             } else {
                 evidenceImageView.setImage(null);
+                responseArea.clear();
             }
         });
     }
@@ -290,13 +309,11 @@ public class AdminDashboardController {
             
             FilteredList<Report> filteredData = new FilteredList<>(data, p -> true);
             
-            searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-                filteredData.setPredicate(report -> isMatch(report, newValue, filterStatusComboBox.getValue()));
-            });
-            
-            filterStatusComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-                filteredData.setPredicate(report -> isMatch(report, searchField.getText(), newValue));
-            });
+            // Listeners for all filters
+            searchField.textProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
+            filterStatusComboBox.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
+            startDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
+            endDatePicker.valueProperty().addListener((observable, oldValue, newValue) -> updateFilter(filteredData));
             
             SortedList<Report> sortedData = new SortedList<>(filteredData);
             sortedData.comparatorProperty().bind(reportsTable.comparatorProperty());
@@ -307,29 +324,48 @@ public class AdminDashboardController {
         }
     }
 
-    private boolean isMatch(Report report, String searchText, String statusFilter) {
-        if (statusFilter != null && !statusFilter.equals("SEMUA") && !report.getStatus().equalsIgnoreCase(statusFilter)) {
+    private void updateFilter(FilteredList<Report> filteredData) {
+        filteredData.setPredicate(report -> {
+            // 1. Status Filter
+            String statusFilter = filterStatusComboBox.getValue();
+            if (statusFilter != null && !statusFilter.equals("SEMUA") && !report.getStatus().equalsIgnoreCase(statusFilter)) {
+                return false;
+            }
+            
+            // 2. Date Range Filter
+            if (startDatePicker.getValue() != null) {
+                if (report.getCreatedAt().toLocalDateTime().toLocalDate().isBefore(startDatePicker.getValue())) {
+                    return false;
+                }
+            }
+            if (endDatePicker.getValue() != null) {
+                if (report.getCreatedAt().toLocalDateTime().toLocalDate().isAfter(endDatePicker.getValue())) {
+                    return false;
+                }
+            }
+            
+            // 3. Search Text
+            String searchText = searchField.getText();
+            if (searchText == null || searchText.isEmpty()) {
+                return true;
+            }
+            
+            String lowerCaseFilter = searchText.toLowerCase();
+            if (report.getTitle().toLowerCase().contains(lowerCaseFilter)) {
+                return true;
+            } else if (String.valueOf(report.getUserId()).contains(lowerCaseFilter)) {
+                return true;
+            }
+            
             return false;
-        }
-        
-        if (searchText == null || searchText.isEmpty()) {
-            return true;
-        }
-        
-        String lowerCaseFilter = searchText.toLowerCase();
-        
-        if (report.getTitle().toLowerCase().contains(lowerCaseFilter)) {
-            return true;
-        } else if (String.valueOf(report.getUserId()).contains(lowerCaseFilter)) {
-            return true;
-        }
-        return false;
+        });
     }
 
     @FXML
     private void handleUpdateStatus() {
         Report selectedReport = reportsTable.getSelectionModel().getSelectedItem();
         String newStatus = statusComboBox.getValue();
+        String response = responseArea.getText();
 
         if (selectedReport == null || newStatus == null) {
             showAlert(Alert.AlertType.ERROR, "Error", "Pilih laporan dan status baru.");
@@ -337,7 +373,7 @@ public class AdminDashboardController {
         }
 
         try {
-            if (reportDAO.updateStatus(selectedReport.getId(), newStatus)) {
+            if (reportDAO.updateStatus(selectedReport.getId(), newStatus, response)) {
                 // Log activity
                 ActivityLog log = new ActivityLog();
                 log.setUserId(SessionManager.getCurrentUser().getId());
@@ -345,7 +381,7 @@ public class AdminDashboardController {
                 log.setAction("Mengubah status laporan #" + selectedReport.getId() + " menjadi " + newStatus);
                 activityLogDAO.logActivity(log);
 
-                showAlert(Alert.AlertType.INFORMATION, "Success", "Status berhasil diperbarui.");
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Status dan tanggapan berhasil diperbarui.");
                 loadReports();
                 loadStatistics();
             } else {
@@ -365,6 +401,51 @@ public class AdminDashboardController {
     @FXML
     private void handleGoToManageReports() {
         mainTabPane.getSelectionModel().select(manageReportsTab);
+    }
+
+    @FXML
+    private void handleExportReports() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Simpan Laporan ke CSV");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+        fileChooser.setInitialFileName("laporan_pengaduan.csv");
+        
+        File file = fileChooser.showSaveDialog(mainTabPane.getScene().getWindow());
+        
+        if (file != null) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+                // Write Header
+                writer.write("ID,User ID,Judul,Isi Laporan,Status,Tanggal Dibuat,Tanggal Update");
+                writer.newLine();
+                
+                // Write Data
+                // Use the items currently in the table (respecting filters)
+                for (Report report : reportsTable.getItems()) {
+                    String line = String.format("%d,%d,\"%s\",\"%s\",%s,%s,%s",
+                        report.getId(),
+                        report.getUserId(),
+                        escapeCsv(report.getTitle()),
+                        escapeCsv(report.getContent()),
+                        report.getStatus(),
+                        report.getCreatedAt(),
+                        report.getUpdatedAt()
+                    );
+                    writer.write(line);
+                    writer.newLine();
+                }
+                
+                showAlert(Alert.AlertType.INFORMATION, "Sukses", "Data berhasil diekspor ke " + file.getName());
+                
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Error", "Gagal menyimpan file: " + e.getMessage());
+            }
+        }
+    }
+    
+    private String escapeCsv(String text) {
+        if (text == null) return "";
+        return text.replace("\"", "\"\"");
     }
 
     @FXML

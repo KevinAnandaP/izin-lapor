@@ -222,3 +222,130 @@
 .hyperlink:hover {
     -fx-underline: true;
 }
+
+/* Dark Mode */
+.root.dark-mode {
+    -fx-background-color: #18191a;
+}
+
+.root.dark-mode .section-header {
+    -fx-text-fill: #e4e6eb;
+}
+
+.root.dark-mode .subheading-label {
+    -fx-text-fill: #b0b3b8;
+}
+
+.root.dark-mode .card {
+    -fx-background-color: #242526;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 2);
+}
+
+.root.dark-mode .card-header {
+    -fx-text-fill: #b0b3b8;
+}
+
+.root.dark-mode .card-subtext {
+    -fx-text-fill: #b0b3b8;
+}
+
+.root.dark-mode .sidebar {
+    -fx-background-color: #242526;
+}
+
+.root.dark-mode .label {
+    -fx-text-fill: #e4e6eb;
+}
+
+.root.dark-mode .button {
+    -fx-background-color: #3a3b3c;
+    -fx-text-fill: #e4e6eb;
+}
+
+.root.dark-mode .button:hover {
+    -fx-background-color: #4e4f50;
+}
+
+.root.dark-mode .table-view {
+    -fx-background-color: #242526;
+}
+
+.root.dark-mode .table-view .column-header-background {
+    -fx-background-color: #242526;
+    -fx-border-color: #3e4042;
+}
+
+.root.dark-mode .table-view .column-header .label {
+    -fx-text-fill: #b0b3b8;
+}
+
+.root.dark-mode .table-row-cell {
+    -fx-background-color: #242526;
+    -fx-border-color: #3e4042;
+    -fx-text-fill: #e4e6eb;
+}
+
+.root.dark-mode .table-row-cell:hover {
+    -fx-background-color: #3a3b3c;
+}
+
+.root.dark-mode .table-row-cell:selected {
+    -fx-background-color: #2e89ff;
+    -fx-text-fill: white;
+}
+
+.root.dark-mode .text-field, 
+.root.dark-mode .password-field, 
+.root.dark-mode .text-area, 
+.root.dark-mode .combo-box {
+    -fx-background-color: #3a3b3c;
+    -fx-text-fill: #e4e6eb;
+    -fx-border-color: #3e4042;
+}
+
+.root.dark-mode .chart-pie-label {
+    -fx-fill: #e4e6eb;
+}
+
+.root.dark-mode .chart-legend {
+    -fx-background-color: transparent;
+}
+
+.root.dark-mode .chart-legend-item {
+    -fx-text-fill: #e4e6eb;
+}
+
+/* Dark Mode - TableView Text Fixes */
+.root.dark-mode .table-cell {
+    -fx-text-fill: #e4e6eb;
+}
+
+.root.dark-mode .table-row-cell:selected .table-cell {
+    -fx-text-fill: white;
+}
+
+/* Dark Mode - ComboBox Popup Fixes */
+.root.dark-mode .combo-box-popup .list-view {
+    -fx-background-color: #3a3b3c;
+    -fx-border-color: #3e4042;
+}
+
+.root.dark-mode .combo-box-popup .list-cell {
+    -fx-background-color: #3a3b3c;
+    -fx-text-fill: #e4e6eb;
+}
+
+.root.dark-mode .combo-box-popup .list-cell:filled:selected, 
+.root.dark-mode .combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: #2e89ff;
+    -fx-text-fill: white;
+}
+
+/* Dark Mode - Pie Chart Legend Text Fix */
+.root.dark-mode .chart-legend-item-symbol {
+   /* Symbol styling if needed, usually automatic */
+}
+
+.root.dark-mode .chart-legend-item {
+    -fx-text-fill: #e4e6eb;
+}
