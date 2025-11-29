@@ -51,14 +51,17 @@ public class RegisterController {
 
     @FXML
     private void handleRegister() {
+        String nik = nikField.getText().trim();
+        
         if (nikField.getText().isEmpty() || fullNameField.getText().isEmpty() || 
-            usernameField.getText().isEmpty() || passwordField.getText().isEmpty()) {
-            showAlert("Error", "Harap isi semua field wajib (NIK, Nama, Username, Password).");
+            usernameField.getText().isEmpty() || passwordField.getText().isEmpty() ||
+            phoneField.getText().isEmpty() || addressField.getText().isEmpty()) {
+            showAlert("Error", "Harap isi semua field (NIK, Nama, Username, Password, Telepon, Alamat).");
             return;
         }
 
         User user = new User();
-        user.setNik(nikField.getText());
+        user.setNik(nik);
         user.setFullName(fullNameField.getText());
         user.setUsername(usernameField.getText());
         user.setPassword(passwordField.getText());

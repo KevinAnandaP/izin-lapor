@@ -178,7 +178,6 @@
     -fx-background-color: #e7f3ff;
 }
 
-/* TabPane - Hide Headers */
 .tab-pane > .tab-header-area {
     -fx-pref-height: 0;
     -fx-max-height: 0;
@@ -211,7 +210,6 @@
     -fx-text-fill: #2e7d32; /* Darker Green */
 }
 
-/* Hyperlinks */
 .hyperlink {
     -fx-text-fill: #1877f2;
     -fx-font-size: 12px;
@@ -224,10 +222,10 @@
 }
 
 /* Dark Mode */
-.root.dark-mode {
+/* .root.dark-mode {
     -fx-background-color: #18191a;
-}
-
+} */
+/* 
 .root.dark-mode .section-header {
     -fx-text-fill: #e4e6eb;
 }
@@ -316,36 +314,62 @@
 }
 
 /* Dark Mode - TableView Text Fixes */
-.root.dark-mode .table-cell {
+/* .root.dark-mode .table-cell {
     -fx-text-fill: #e4e6eb;
 }
 
 .root.dark-mode .table-row-cell:selected .table-cell {
     -fx-text-fill: white;
-}
+} */
 
 /* Dark Mode - ComboBox Popup Fixes */
-.root.dark-mode .combo-box-popup .list-view {
+/* .root.dark-mode .combo-box-popup .list-view {
     -fx-background-color: #3a3b3c;
-    -fx-border-color: #3e4042;
-}
+    -fx-border-color: #3e4042; */
+/* }
 
 .root.dark-mode .combo-box-popup .list-cell {
     -fx-background-color: #3a3b3c;
     -fx-text-fill: #e4e6eb;
-}
+} */
 
-.root.dark-mode .combo-box-popup .list-cell:filled:selected, 
+/* .root.dark-mode .combo-box-popup .list-cell:filled:selected, 
 .root.dark-mode .combo-box-popup .list-cell:filled:hover {
     -fx-background-color: #2e89ff;
     -fx-text-fill: white;
-}
+} */
 
 /* Dark Mode - Pie Chart Legend Text Fix */
-.root.dark-mode .chart-legend-item-symbol {
+/* .root.dark-mode .chart-legend-item-symbol {
    /* Symbol styling if needed, usually automatic */
+
+/* .root.dark-mode .chart-legend-item {
+    -fx-text-fill: #e4e6eb;
+} */
+
+/* Status Badges */
+.status-badge {
+    -fx-padding: 5 10 5 10;
+    -fx-background-radius: 15;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-alignment: CENTER;
+    -fx-min-width: 80px;
 }
 
-.root.dark-mode .chart-legend-item {
-    -fx-text-fill: #e4e6eb;
+.status-baru {
+    -fx-background-color: #607d8b; /* Blue Grey */
+}
+
+.status-diproses {
+    -fx-background-color: #ff9800; /* Orange */
+}
+
+.status-selesai {
+    -fx-background-color: #4caf50; /* Green */
+}
+
+.status-ditolak {
+    -fx-background-color: #f44336; /* Red */
 }

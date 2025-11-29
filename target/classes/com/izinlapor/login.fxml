@@ -12,13 +12,13 @@
 <?import javafx.scene.text.Font?>
 
 <HBox xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.izinlapor.controller.LoginController">
-    <!-- Left Side: Branding -->
+    <!-- Left Side -->
     <VBox alignment="CENTER" prefWidth="320.0" styleClass="login-sidebar" HBox.hgrow="NEVER">
         <Label styleClass="brand-label" text="Izin Lapor" />
         <Label styleClass="tagline-label" text="Sistem Pengaduan Masyarakat" wrapText="true" textAlignment="CENTER"/>
     </VBox>
     
-    <!-- Right Side: Form -->
+    <!-- Right Side -->
     <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: white;">
         <VBox alignment="CENTER" spacing="20.0" styleClass="login-form-container">
             <VBox alignment="CENTER" spacing="5.0">

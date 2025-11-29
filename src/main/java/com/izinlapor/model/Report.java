@@ -6,6 +6,7 @@ public class Report {
     private int id;
     private int userId;
     private String title;
+    private String category;
     private String content;
     private String photoPath;
     private String status;
@@ -15,10 +16,11 @@ public class Report {
 
     public Report() {}
 
-    public Report(int id, int userId, String title, String content, String photoPath, String status, String response, Timestamp createdAt, Timestamp updatedAt) {
+    public Report(int id, int userId, String title, String category, String content, String photoPath, String status, String response, Timestamp createdAt, Timestamp updatedAt) {
         this.id = id;
         this.userId = userId;
         this.title = title;
+        this.category = category;
         this.content = content;
         this.photoPath = photoPath;
         this.status = status;
@@ -35,6 +37,9 @@ public class Report {
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
     public String getContent() { return content; }
     public void setContent(String content) { this.content = content; }

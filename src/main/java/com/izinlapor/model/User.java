@@ -25,7 +25,6 @@ public class User {
         this.photoProfile = photoProfile;
     }
     
-    // Constructor for backward compatibility or without photo
     public User(int id, String nik, String fullName, String username, String password, String role, String phone, String address) {
         this(id, nik, fullName, username, password, role, phone, address, null);
     }

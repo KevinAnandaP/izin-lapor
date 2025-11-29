@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
@@ -13,6 +14,9 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -56,7 +60,8 @@
                 <Button maxWidth="Infinity" onAction="#handleGoToManageUsers" text="Kelola User" />
             </VBox>
             
-            <VBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS">
+            <VBox alignment="BOTTOM_LEFT" VBox.vgrow="ALWAYS" spacing="5.0">
+                <Button maxWidth="Infinity" onAction="#handleResetDatabase" text="Reset Database" style="-fx-background-color: #ffebee; -fx-text-fill: #c62828; -fx-font-weight: bold;" />
                 <Button maxWidth="Infinity" onAction="#handleLogout" text="Keluar" />
             </VBox>
         </VBox>
@@ -104,11 +109,11 @@
                                         </VBox>
                                     </HBox>
                                     
-                                    <!-- Recent Activity Section -->
+                                    <!-- Recent Activity Section (Reverted) -->
                                     <VBox styleClass="card" VBox.vgrow="ALWAYS">
                                         <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Aktivitas Terbaru" textFill="#333333" />
                                         <Separator style="-fx-padding: 15 0 15 0;" />
-                                        <Label text="Silakan buka tab 'Kelola Pengaduan' untuk melihat detail laporan dan melakukan tindakan." textFill="#65676b" />
+                                        <Label text="Fitur log aktivitas akan segera hadir." textFill="#666666" />
                                     </VBox>
                                 </VBox>
                             </content>
@@ -144,6 +149,7 @@
                                     <TableColumn fx:id="colDate" prefWidth="150.0" text="Tanggal" />
                                     <TableColumn fx:id="colUser" prefWidth="120.0" text="User ID" />
                                     <TableColumn fx:id="colTitle" prefWidth="250.0" text="Judul" />
+                                    <TableColumn fx:id="colCategory" prefWidth="150.0" text="Kategori" />
                                     <TableColumn fx:id="colStatus" prefWidth="120.0" text="Status" />
                                 </columns>
                                 <columnResizePolicy>
@@ -172,6 +178,16 @@
                                             <Button onAction="#handleUpdateStatus" styleClass="button-primary" text="Simpan Perubahan" />
                                         </HBox>
                                     </VBox>
+                                </HBox>
+                            </VBox>
+                            
+                            <!-- Chat Area -->
+                            <VBox styleClass="card" spacing="10.0" VBox.vgrow="ALWAYS">
+                                <Label style="-fx-font-weight: bold; -fx-font-size: 14px;" text="Diskusi / Chat" />
+                                <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" prefHeight="150.0"/>
+                                <HBox spacing="10.0">
+                                    <TextField fx:id="chatInputField" promptText="Tulis pesan..." HBox.hgrow="ALWAYS"/>
+                                    <Button text="Kirim" onAction="#handleSendChat"/>
                                 </HBox>
                             </VBox>
                         </VBox>

@@ -10,14 +10,24 @@ import java.util.List;
 public class ReportDAO {
 
     public boolean createReport(Report report) throws SQLException {
-        String sql = "INSERT INTO reports (user_id, title, content, photo_path, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO reports (user_id, title, category, content, photo_path, status) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, report.getUserId());
             pstmt.setString(2, report.getTitle());
-            pstmt.setString(3, report.getContent());
-            pstmt.setString(4, report.getPhotoPath());
-            pstmt.setString(5, "BARU");
+            pstmt.setString(3, report.getCategory());
+            pstmt.setString(4, report.getContent());
+            pstmt.setString(5, report.getPhotoPath());
+            pstmt.setString(6, "BARU");
+            return pstmt.executeUpdate() > 0;
+        }
+    }
+
+    public boolean deleteReport(int reportId) throws SQLException {
+        String sql = "DELETE FROM reports WHERE id = ? AND status = 'BARU'";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, reportId);
             return pstmt.executeUpdate() > 0;
         }
     }
@@ -66,6 +76,7 @@ public class ReportDAO {
             rs.getInt("id"),
             rs.getInt("user_id"),
             rs.getString("title"),
+            rs.getString("category"),
             rs.getString("content"),
             rs.getString("photo_path"),
             rs.getString("status"),

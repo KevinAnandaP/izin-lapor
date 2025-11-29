@@ -14,13 +14,13 @@
 <?import javafx.scene.text.Font?>
 
 <HBox xmlns="http://javafx.com/javafx/13" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.izinlapor.controller.RegisterController">
-    <!-- Left Side: Branding -->
+    <!-- Left Side -->
     <VBox alignment="CENTER" prefWidth="320.0" styleClass="login-sidebar" HBox.hgrow="NEVER">
         <Label styleClass="brand-label" text="Izin Lapor" />
         <Label styleClass="tagline-label" text="Bergabunglah Bersama Kami" wrapText="true" textAlignment="CENTER"/>
     </VBox>
     
-    <!-- Right Side: Form -->
+    <!-- Right Side -->
     <StackPane HBox.hgrow="ALWAYS" style="-fx-background-color: white;">
         <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background-color: transparent; -fx-background: white; -fx-padding: 0;">
             <content>
@@ -39,7 +39,6 @@
                         <VBox alignment="CENTER" spacing="10.0">
                             <StackPane style="-fx-background-color: #f0f2f5; -fx-background-radius: 50; -fx-border-radius: 50; -fx-border-color: #ddd;" maxHeight="100" maxWidth="100" minHeight="100" minWidth="100">
                                  <ImageView fx:id="profileImageView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
-                                 <!-- <Label text="Foto" textFill="#999999" mouseTransparent="true"/> -->
                             </StackPane>
                             <Button onAction="#handleChoosePhoto" styleClass="button" text="Pilih Foto Profil" />
                         </VBox>

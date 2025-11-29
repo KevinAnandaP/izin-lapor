@@ -1,10 +1,13 @@
 package com.izinlapor.controller;
 
 import com.izinlapor.App;
+import com.izinlapor.dao.CommentDAO;
 import com.izinlapor.dao.ReportDAO;
 import com.izinlapor.dao.UserDAO;
+import com.izinlapor.model.Comment;
 import com.izinlapor.model.Report;
 import com.izinlapor.model.User;
+import com.izinlapor.util.FileUtil;
 import com.izinlapor.util.SessionManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -38,6 +41,7 @@ public class CitizenDashboardController {
 
     // Create Report Tab
     @FXML private TextField titleField;
+    @FXML private ComboBox<String> categoryComboBox;
     @FXML private TextArea contentField;
     @FXML private Label photoPathLabel;
     @FXML private ImageView previewImageView;
@@ -47,11 +51,16 @@ public class CitizenDashboardController {
     @FXML private TableView<Report> historyTable;
     @FXML private TableColumn<Report, String> colDate;
     @FXML private TableColumn<Report, String> colTitle;
+    @FXML private TableColumn<Report, String> colCategory;
     @FXML private TableColumn<Report, String> colStatus;
     @FXML private ImageView historyImageView;
     @FXML private TextArea responseArea;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> filterStatusComboBox;
+    @FXML private Button deleteReportButton;
+    
+    @FXML private ListView<String> chatListView;
+    @FXML private TextField chatInputField;
 
     // Edit Profile Tab
     @FXML private TextField editNikField;
@@ -68,6 +77,7 @@ public class CitizenDashboardController {
 
     private ReportDAO reportDAO = new ReportDAO();
     private UserDAO userDAO = new UserDAO();
+    private CommentDAO commentDAO = new CommentDAO();
 
     @FXML
     public void initialize() {
@@ -75,6 +85,8 @@ public class CitizenDashboardController {
         updateSidebarProfile();
         loadRecentStatus();
         setupHistoryTable();
+        
+        categoryComboBox.setItems(FXCollections.observableArrayList("Infrastruktur", "Kebersihan", "Keamanan", "Administrasi", "Lainnya"));
         
         filterStatusComboBox.setItems(FXCollections.observableArrayList("SEMUA", "BARU", "DIPROSES", "SELESAI", "DITOLAK"));
         filterStatusComboBox.setValue("SEMUA");
@@ -96,7 +108,8 @@ public class CitizenDashboardController {
             sidebarNameLabel.setText(user.getFullName());
             if (user.getPhotoProfile() != null) {
                 try {
-                    File file = new File(user.getPhotoProfile());
+                    String fullPath = FileUtil.getFullPath(user.getPhotoProfile());
+                    File file = new File(fullPath);
                     if (file.exists()) {
                         sidebarProfileImageView.setImage(new Image(file.toURI().toString()));
                         
@@ -126,7 +139,8 @@ public class CitizenDashboardController {
             
             if (user.getPhotoProfile() != null) {
                 try {
-                    File file = new File(user.getPhotoProfile());
+                    String fullPath = FileUtil.getFullPath(user.getPhotoProfile());
+                    File file = new File(fullPath);
                     if (file.exists()) {
                         profileImageView.setImage(new Image(file.toURI().toString()));
                     }
@@ -168,7 +182,15 @@ public class CitizenDashboardController {
             user.setAddress(newAddress);
             
             if (selectedProfilePhoto != null) {
-                user.setPhotoProfile(selectedProfilePhoto.getAbsolutePath());
+                try {
+                    // Save to project folder
+                    String savedPath = FileUtil.saveImage(selectedProfilePhoto, "profiles");
+                    user.setPhotoProfile(savedPath);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    showAlert("Error", "Gagal menyimpan foto profil: " + e.getMessage());
+                    return;
+                }
             }
 
             try {
@@ -204,14 +226,22 @@ public class CitizenDashboardController {
     private void setupHistoryTable() {
         colDate.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         
         historyTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 responseArea.setText(newSelection.getResponse());
+                
+                // Enable delete button only if status is BARU
+                deleteReportButton.setDisable(!"BARU".equalsIgnoreCase(newSelection.getStatus()));
+                
+                loadComments(newSelection.getId());
+                
                 if (newSelection.getPhotoPath() != null) {
                     try {
-                        File file = new File(newSelection.getPhotoPath());
+                        String fullPath = FileUtil.getFullPath(newSelection.getPhotoPath());
+                        File file = new File(fullPath);
                         if (file.exists()) {
                             historyImageView.setImage(new Image(file.toURI().toString()));
                         } else {
@@ -226,8 +256,49 @@ public class CitizenDashboardController {
             } else {
                 historyImageView.setImage(null);
                 responseArea.clear();
+                deleteReportButton.setDisable(true);
+                chatListView.getItems().clear();
             }
         });
+    }
+
+    private void loadComments(int reportId) {
+        try {
+            List<Comment> comments = commentDAO.getCommentsByReportId(reportId);
+            ObservableList<String> items = FXCollections.observableArrayList();
+            for (Comment c : comments) {
+                items.add(c.toString());
+            }
+            chatListView.setItems(items);
+            chatListView.scrollTo(items.size() - 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSendChat() {
+        Report selectedReport = historyTable.getSelectionModel().getSelectedItem();
+        String message = chatInputField.getText();
+        
+        if (selectedReport == null || message.isEmpty()) {
+            return;
+        }
+        
+        Comment comment = new Comment();
+        comment.setReportId(selectedReport.getId());
+        comment.setUserId(SessionManager.getCurrentUser().getId());
+        comment.setMessage(message);
+        
+        try {
+            if (commentDAO.addComment(comment)) {
+                chatInputField.clear();
+                loadComments(selectedReport.getId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert("Error", "Gagal mengirim pesan: " + e.getMessage());
+        }
     }
 
     private void loadHistory() {
@@ -287,22 +358,36 @@ public class CitizenDashboardController {
 
     @FXML
     private void handleSubmitReport() {
-        if (titleField.getText().isEmpty() || contentField.getText().isEmpty()) {
-            showAlert("Error", "Judul dan Isi laporan wajib diisi.");
+        if (titleField.getText().isEmpty() || contentField.getText().isEmpty() || 
+            categoryComboBox.getValue() == null || selectedPhoto == null) {
+            showAlert("Error", "Semua field wajib diisi (Judul, Kategori, Isi, Foto Bukti).");
             return;
         }
 
         Report report = new Report();
         report.setUserId(SessionManager.getCurrentUser().getId());
         report.setTitle(titleField.getText());
+        report.setCategory(categoryComboBox.getValue() != null ? categoryComboBox.getValue() : "Lainnya");
         report.setContent(contentField.getText());
-        report.setPhotoPath(selectedPhoto != null ? selectedPhoto.getAbsolutePath() : null);
+        
+        if (selectedPhoto != null) {
+            try {
+                // Save to project folder
+                String savedPath = FileUtil.saveImage(selectedPhoto, "reports");
+                report.setPhotoPath(savedPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                showAlert("Error", "Gagal menyimpan foto bukti: " + e.getMessage());
+                return;
+            }
+        }
 
         try {
             if (reportDAO.createReport(report)) {
                 showAlert("Success", "Laporan berhasil dikirim.");
                 titleField.clear();
                 contentField.clear();
+                categoryComboBox.setValue(null);
                 photoPathLabel.setText("");
                 previewImageView.setImage(null);
                 selectedPhoto = null;
@@ -314,6 +399,41 @@ public class CitizenDashboardController {
         } catch (SQLException e) {
             e.printStackTrace();
             showAlert("Error", "Database error: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleDeleteReport() {
+        Report selectedReport = historyTable.getSelectionModel().getSelectedItem();
+        if (selectedReport == null) {
+            showAlert("Error", "Pilih laporan yang ingin dihapus.");
+            return;
+        }
+
+        if (!"BARU".equalsIgnoreCase(selectedReport.getStatus())) {
+            showAlert("Error", "Hanya laporan dengan status BARU yang dapat dihapus.");
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Konfirmasi Hapus");
+        alert.setHeaderText("Hapus Laporan: " + selectedReport.getTitle() + "?");
+        alert.setContentText("Tindakan ini tidak dapat dibatalkan.");
+
+        if (alert.showAndWait().orElse(ButtonType.CANCEL) == ButtonType.OK) {
+            try {
+                if (reportDAO.deleteReport(selectedReport.getId())) {
+                    showAlert("Sukses", "Laporan berhasil dihapus.");
+                    loadHistory();
+                    loadRecentStatus();
+                    historyTable.getSelectionModel().clearSelection();
+                } else {
+                    showAlert("Error", "Gagal menghapus laporan.");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("Error", "Database error: " + e.getMessage());
+            }
         }
     }
 

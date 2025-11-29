@@ -10,25 +10,36 @@ import java.util.Optional;
 
 import com.izinlapor.App;
 import com.izinlapor.dao.ActivityLogDAO;
+import com.izinlapor.dao.CommentDAO;
 import com.izinlapor.dao.ReportDAO;
 import com.izinlapor.dao.UserDAO;
 import com.izinlapor.model.ActivityLog;
+import com.izinlapor.model.Comment;
 import com.izinlapor.model.Report;
 import com.izinlapor.model.User;
+
+import com.izinlapor.util.FileUtil;
 import com.izinlapor.util.SessionManager;
+import com.izinlapor.util.DBUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.chart.BarChart;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -51,11 +62,12 @@ public class AdminDashboardController {
     @FXML private Label totalReportsLabel;
     @FXML private Label processingReportsLabel;
     @FXML private Label finishedReportsLabel;
-
+    
     // Reports Tab
     @FXML private TableView<Report> reportsTable;
     @FXML private TableColumn<Report, String> colDate;
     @FXML private TableColumn<Report, String> colTitle;
+    @FXML private TableColumn<Report, String> colCategory;
     @FXML private TableColumn<Report, String> colStatus;
     @FXML private TableColumn<Report, String> colUser;
 
@@ -66,6 +78,9 @@ public class AdminDashboardController {
     @FXML private DatePicker startDatePicker;
     @FXML private DatePicker endDatePicker;
     @FXML private TextArea responseArea;
+    
+    @FXML private ListView<String> chatListView;
+    @FXML private TextField chatInputField;
 
     // Users Tab
     @FXML private TableView<User> usersTable;
@@ -85,6 +100,7 @@ public class AdminDashboardController {
     private ReportDAO reportDAO = new ReportDAO();
     private ActivityLogDAO activityLogDAO = new ActivityLogDAO();
     private UserDAO userDAO = new UserDAO();
+    private CommentDAO commentDAO = new CommentDAO();
 
     @FXML
     public void initialize() {
@@ -119,7 +135,8 @@ public class AdminDashboardController {
             sidebarNameLabel.setText(user.getFullName());
             if (user.getPhotoProfile() != null) {
                 try {
-                    File file = new File(user.getPhotoProfile());
+                    String fullPath = FileUtil.getFullPath(user.getPhotoProfile());
+                    File file = new File(fullPath);
                     if (file.exists()) {
                         sidebarProfileImageView.setImage(new Image(file.toURI().toString()));
                     } else {
@@ -156,7 +173,8 @@ public class AdminDashboardController {
 
                 if (newSelection.getPhotoProfile() != null) {
                     try {
-                        File file = new File(newSelection.getPhotoProfile());
+                        String fullPath = FileUtil.getFullPath(newSelection.getPhotoProfile());
+                        File file = new File(fullPath);
                         if (file.exists()) {
                             userProfileImageView.setImage(new Image(file.toURI().toString()));
                         } else {
@@ -257,16 +275,53 @@ public class AdminDashboardController {
     private void setupTable() {
         colDate.setCellValueFactory(new PropertyValueFactory<>("createdAt"));
         colTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colCategory.setCellValueFactory(new PropertyValueFactory<>("category"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
         colUser.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        
+        // Custom Cell Factory for Status
+        colStatus.setCellFactory(column -> new TableCell<Report, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    Label label = new Label(item);
+                    label.getStyleClass().add("status-badge");
+                    
+                    switch (item.toUpperCase()) {
+                        case "BARU":
+                            label.getStyleClass().add("status-baru");
+                            break;
+                        case "DIPROSES":
+                            label.getStyleClass().add("status-diproses");
+                            break;
+                        case "SELESAI":
+                            label.getStyleClass().add("status-selesai");
+                            break;
+                        case "DITOLAK":
+                            label.getStyleClass().add("status-ditolak");
+                            break;
+                    }
+                    setGraphic(label);
+                    setText(null);
+                }
+            }
+        });
         
         reportsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 statusComboBox.setValue(newSelection.getStatus());
                 responseArea.setText(newSelection.getResponse()); // Load existing response
+                
+                loadComments(newSelection.getId());
+                
                 if (newSelection.getPhotoPath() != null) {
                     try {
-                        File file = new File(newSelection.getPhotoPath());
+                        String fullPath = FileUtil.getFullPath(newSelection.getPhotoPath());
+                        File file = new File(fullPath);
                         if (file.exists()) {
                             evidenceImageView.setImage(new Image(file.toURI().toString()));
                         } else {
@@ -281,8 +336,48 @@ public class AdminDashboardController {
             } else {
                 evidenceImageView.setImage(null);
                 responseArea.clear();
+                chatListView.getItems().clear();
             }
         });
+    }
+
+    private void loadComments(int reportId) {
+        try {
+            List<Comment> comments = commentDAO.getCommentsByReportId(reportId);
+            ObservableList<String> items = FXCollections.observableArrayList();
+            for (Comment c : comments) {
+                items.add(c.toString());
+            }
+            chatListView.setItems(items);
+            chatListView.scrollTo(items.size() - 1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void handleSendChat() {
+        Report selectedReport = reportsTable.getSelectionModel().getSelectedItem();
+        String message = chatInputField.getText();
+        
+        if (selectedReport == null || message.isEmpty()) {
+            return;
+        }
+        
+        Comment comment = new Comment();
+        comment.setReportId(selectedReport.getId());
+        comment.setUserId(SessionManager.getCurrentUser().getId());
+        comment.setMessage(message);
+        
+        try {
+            if (commentDAO.addComment(comment)) {
+                chatInputField.clear();
+                loadComments(selectedReport.getId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Gagal mengirim pesan: " + e.getMessage());
+        }
     }
 
     private void loadStatistics() {
@@ -290,12 +385,15 @@ public class AdminDashboardController {
             int total = reportDAO.countAllReports();
             int processing = reportDAO.countReportsByStatus("DIPROSES");
             int finished = reportDAO.countReportsByStatus("SELESAI");
+            int rejected = reportDAO.countReportsByStatus("DITOLAK");
+            int newReports = reportDAO.countReportsByStatus("BARU");
             
             System.out.println("Loading Stats: Total=" + total + ", Processing=" + processing + ", Finished=" + finished);
             
             totalReportsLabel.setText(String.valueOf(total));
             processingReportsLabel.setText(String.valueOf(processing));
             finishedReportsLabel.setText(String.valueOf(finished));
+            
         } catch (SQLException e) {
             e.printStackTrace();
             System.err.println("Error loading statistics: " + e.getMessage());
@@ -326,13 +424,13 @@ public class AdminDashboardController {
 
     private void updateFilter(FilteredList<Report> filteredData) {
         filteredData.setPredicate(report -> {
-            // 1. Status Filter
+            // Status Filter
             String statusFilter = filterStatusComboBox.getValue();
             if (statusFilter != null && !statusFilter.equals("SEMUA") && !report.getStatus().equalsIgnoreCase(statusFilter)) {
                 return false;
             }
             
-            // 2. Date Range Filter
+            // Date Range Filter
             if (startDatePicker.getValue() != null) {
                 if (report.getCreatedAt().toLocalDateTime().toLocalDate().isBefore(startDatePicker.getValue())) {
                     return false;
@@ -344,7 +442,7 @@ public class AdminDashboardController {
                 }
             }
             
-            // 3. Search Text
+            // Search Text
             String searchText = searchField.getText();
             if (searchText == null || searchText.isEmpty()) {
                 return true;
@@ -419,7 +517,6 @@ public class AdminDashboardController {
                 writer.newLine();
                 
                 // Write Data
-                // Use the items currently in the table (respecting filters)
                 for (Report report : reportsTable.getItems()) {
                     String line = String.format("%d,%d,\"%s\",\"%s\",%s,%s,%s",
                         report.getId(),
@@ -452,6 +549,25 @@ public class AdminDashboardController {
     private void handleLogout() throws IOException {
         SessionManager.logout();
         App.setRoot("login");
+    }
+
+    @FXML
+    private void handleResetDatabase() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Reset Database");
+        alert.setHeaderText("Apakah Anda yakin ingin mereset database?");
+        alert.setContentText("Semua data (user, laporan, log) akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.");
+
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            DBUtil.resetDatabase();
+            showAlert(Alert.AlertType.INFORMATION, "Sukses", "Database berhasil direset.");
+            try {
+                handleLogout();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String content) {

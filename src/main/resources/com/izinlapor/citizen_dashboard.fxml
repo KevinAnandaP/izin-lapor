@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.PasswordField?>
@@ -16,6 +17,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -147,6 +149,7 @@
                                 </font>
                             </Label>
                             <TextField fx:id="titleField" promptText="Judul Laporan" />
+                            <ComboBox fx:id="categoryComboBox" promptText="Pilih Kategori" maxWidth="Infinity" />
                             <TextArea fx:id="contentField" prefHeight="100.0" promptText="Isi Laporan / Kronologi" />
                             <Button onAction="#handleChoosePhoto" text="Pilih Foto Bukti" />
                             <Label fx:id="photoPathLabel" text="Tidak ada file dipilih" />
@@ -169,13 +172,26 @@
                                 <columns>
                                     <TableColumn fx:id="colDate" prefWidth="150.0" text="Tanggal" />
                                     <TableColumn fx:id="colTitle" prefWidth="200.0" text="Judul" />
+                                    <TableColumn fx:id="colCategory" prefWidth="150.0" text="Kategori" />
                                     <TableColumn fx:id="colStatus" prefWidth="100.0" text="Status" />
                                 </columns>
                             </TableView>
-                            <Label text="Detail Foto:" />
+                            <HBox spacing="10.0" alignment="CENTER_LEFT">
+                                <Label text="Detail Foto:" />
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button fx:id="deleteReportButton" text="Hapus Laporan" onAction="#handleDeleteReport" style="-fx-background-color: #ffebee; -fx-text-fill: #c62828;" disable="true"/>
+                            </HBox>
                             <ImageView fx:id="historyImageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
                             <Label text="Tanggapan Admin:" />
-                            <TextArea fx:id="responseArea" editable="false" prefHeight="80.0" wrapText="true" />
+                            <TextArea fx:id="responseArea" editable="false" prefHeight="60.0" wrapText="true" />
+                            
+                            <Separator />
+                            <Label text="Diskusi / Chat:" style="-fx-font-weight: bold;"/>
+                            <ListView fx:id="chatListView" VBox.vgrow="ALWAYS" prefHeight="150.0"/>
+                            <HBox spacing="10.0">
+                                <TextField fx:id="chatInputField" promptText="Tulis pesan..." HBox.hgrow="ALWAYS"/>
+                                <Button text="Kirim" onAction="#handleSendChat"/>
+                            </HBox>
                         </VBox>
                     </content>
                 </Tab>
