@@ -47,6 +47,7 @@
                             <TextField fx:id="nikField" promptText="NIK (Nomor Induk Kependudukan)" />
                             <TextField fx:id="fullNameField" promptText="Nama Lengkap" />
                             <TextField fx:id="usernameField" promptText="Username" />
+                            <TextField fx:id="emailField" promptText="Email" />
                             <PasswordField fx:id="passwordField" promptText="Password" />
                             <TextField fx:id="phoneField" promptText="Nomor Telepon" />
                             <TextField fx:id="addressField" promptText="Alamat Lengkap" />

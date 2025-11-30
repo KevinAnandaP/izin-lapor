@@ -20,6 +20,7 @@ public class RegisterController {
     @FXML private TextField nikField;
     @FXML private TextField fullNameField;
     @FXML private TextField usernameField;
+    @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
     @FXML private TextField phoneField;
     @FXML private TextField addressField;
@@ -55,8 +56,9 @@ public class RegisterController {
         
         if (nikField.getText().isEmpty() || fullNameField.getText().isEmpty() || 
             usernameField.getText().isEmpty() || passwordField.getText().isEmpty() ||
-            phoneField.getText().isEmpty() || addressField.getText().isEmpty()) {
-            showAlert("Error", "Harap isi semua field (NIK, Nama, Username, Password, Telepon, Alamat).");
+            phoneField.getText().isEmpty() || addressField.getText().isEmpty() ||
+            emailField.getText().isEmpty()) {
+            showAlert("Error", "Harap isi semua field (NIK, Nama, Username, Email, Password, Telepon, Alamat).");
             return;
         }
 
@@ -64,6 +66,7 @@ public class RegisterController {
         user.setNik(nik);
         user.setFullName(fullNameField.getText());
         user.setUsername(usernameField.getText());
+        user.setEmail(emailField.getText());
         user.setPassword(passwordField.getText());
         user.setRole("WARGA");
         user.setPhone(phoneField.getText());

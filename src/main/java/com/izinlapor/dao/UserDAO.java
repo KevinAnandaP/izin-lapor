@@ -24,6 +24,7 @@ public class UserDAO {
                         rs.getString("full_name"),
                         rs.getString("username"),
                         rs.getString("password"),
+                        rs.getString("email"),
                         rs.getString("role"),
                         rs.getString("phone"),
                         rs.getString("address"),
@@ -36,30 +37,32 @@ public class UserDAO {
     }
 
     public boolean register(User user) throws SQLException {
-        String sql = "INSERT INTO users (nik, full_name, username, password, role, phone, address, photo_profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO users (nik, full_name, username, password, email, role, phone, address, photo_profile) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, user.getNik());
             pstmt.setString(2, user.getFullName());
             pstmt.setString(3, user.getUsername());
             pstmt.setString(4, user.getPassword());
-            pstmt.setString(5, user.getRole());
-            pstmt.setString(6, user.getPhone());
-            pstmt.setString(7, user.getAddress());
-            pstmt.setString(8, user.getPhotoProfile());
+            pstmt.setString(5, user.getEmail());
+            pstmt.setString(6, user.getRole());
+            pstmt.setString(7, user.getPhone());
+            pstmt.setString(8, user.getAddress());
+            pstmt.setString(9, user.getPhotoProfile());
             return pstmt.executeUpdate() > 0;
         }
     }
     
     public boolean updateUser(User user) throws SQLException {
-        String sql = "UPDATE users SET full_name = ?, phone = ?, address = ?, photo_profile = ? WHERE id = ?";
+        String sql = "UPDATE users SET full_name = ?, phone = ?, address = ?, photo_profile = ?, email = ? WHERE id = ?";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, user.getFullName());
             pstmt.setString(2, user.getPhone());
             pstmt.setString(3, user.getAddress());
             pstmt.setString(4, user.getPhotoProfile());
-            pstmt.setInt(5, user.getId());
+            pstmt.setString(5, user.getEmail());
+            pstmt.setInt(6, user.getId());
             return pstmt.executeUpdate() > 0;
         }
     }
@@ -87,6 +90,7 @@ public class UserDAO {
                     rs.getString("full_name"),
                     rs.getString("username"),
                     rs.getString("password"),
+                    rs.getString("email"),
                     rs.getString("role"),
                     rs.getString("phone"),
                     rs.getString("address"),
@@ -95,6 +99,31 @@ public class UserDAO {
             }
         }
         return users;
+    }
+
+    public User getUserById(int userId) throws SQLException {
+        String sql = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new User(
+                        rs.getInt("id"),
+                        rs.getString("nik"),
+                        rs.getString("full_name"),
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("email"),
+                        rs.getString("role"),
+                        rs.getString("phone"),
+                        rs.getString("address"),
+                        rs.getString("photo_profile")
+                    );
+                }
+            }
+        }
+        return null;
     }
 
     public boolean deleteUser(int userId) throws SQLException {

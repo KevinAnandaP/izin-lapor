@@ -8,7 +8,9 @@ com\izinlapor\model\Comment.class
 com\izinlapor\App.class
 com\izinlapor\controller\RegisterController.class
 com\izinlapor\dao\CommentDAO.class
+com\izinlapor\util\EmailUtil$1.class
 com\izinlapor\controller\AdminDashboardController$1.class
+com\izinlapor\util\EmailUtil.class
 com\izinlapor\dao\ReportDAO.class
 com\izinlapor\util\DBUtil.class
 com\izinlapor\model\Report.class

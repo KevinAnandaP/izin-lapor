@@ -218,6 +218,7 @@
                                     <TableColumn fx:id="colUserNik" prefWidth="150.0" text="NIK" />
                                     <TableColumn fx:id="colUserName" prefWidth="200.0" text="Nama Lengkap" />
                                     <TableColumn fx:id="colUserUsername" prefWidth="150.0" text="Username" />
+                                    <TableColumn fx:id="colUserEmail" prefWidth="200.0" text="Email" />
                                     <TableColumn fx:id="colUserRole" prefWidth="100.0" text="Role" />
                                 </columns>
                                 <columnResizePolicy>
@@ -249,6 +250,10 @@
                                         <HBox spacing="10.0">
                                             <Label text="Username:" style="-fx-font-weight: bold; -fx-min-width: 100;" />
                                             <Label fx:id="detailUsernameLabel" text="-" />
+                                        </HBox>
+                                        <HBox spacing="10.0">
+                                            <Label text="Email:" style="-fx-font-weight: bold; -fx-min-width: 100;" />
+                                            <Label fx:id="detailEmailLabel" text="-" />
                                         </HBox>
                                         <HBox spacing="10.0">
                                             <Label text="No. HP:" style="-fx-font-weight: bold; -fx-min-width: 100;" />

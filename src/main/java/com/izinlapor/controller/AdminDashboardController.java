@@ -21,6 +21,7 @@ import com.izinlapor.model.User;
 import com.izinlapor.util.FileUtil;
 import com.izinlapor.util.SessionManager;
 import com.izinlapor.util.DBUtil;
+import com.izinlapor.util.EmailUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -87,6 +88,7 @@ public class AdminDashboardController {
     @FXML private TableColumn<User, String> colUserNik;
     @FXML private TableColumn<User, String> colUserName;
     @FXML private TableColumn<User, String> colUserUsername;
+    @FXML private TableColumn<User, String> colUserEmail;
     @FXML private TableColumn<User, String> colUserRole;
     @FXML private TextField userSearchField;
 
@@ -94,6 +96,7 @@ public class AdminDashboardController {
     @FXML private Label detailNikLabel;
     @FXML private Label detailNameLabel;
     @FXML private Label detailUsernameLabel;
+    @FXML private Label detailEmailLabel;
     @FXML private Label detailPhoneLabel;
     @FXML private Label detailAddressLabel;
 
@@ -161,6 +164,7 @@ public class AdminDashboardController {
         colUserNik.setCellValueFactory(new PropertyValueFactory<>("nik"));
         colUserName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
         colUserUsername.setCellValueFactory(new PropertyValueFactory<>("username"));
+        colUserEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colUserRole.setCellValueFactory(new PropertyValueFactory<>("role"));
 
         usersTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -168,6 +172,7 @@ public class AdminDashboardController {
                 detailNikLabel.setText(newSelection.getNik());
                 detailNameLabel.setText(newSelection.getFullName());
                 detailUsernameLabel.setText(newSelection.getUsername());
+                detailEmailLabel.setText(newSelection.getEmail());
                 detailPhoneLabel.setText(newSelection.getPhone());
                 detailAddressLabel.setText(newSelection.getAddress());
 
@@ -196,6 +201,7 @@ public class AdminDashboardController {
         detailNikLabel.setText("-");
         detailNameLabel.setText("-");
         detailUsernameLabel.setText("-");
+        detailEmailLabel.setText("-");
         detailPhoneLabel.setText("-");
         detailAddressLabel.setText("-");
         userProfileImageView.setImage(null);
@@ -478,6 +484,17 @@ public class AdminDashboardController {
                 log.setReportId(selectedReport.getId());
                 log.setAction("Mengubah status laporan #" + selectedReport.getId() + " menjadi " + newStatus);
                 activityLogDAO.logActivity(log);
+
+                // Send Email Notification
+                User user = userDAO.getUserById(selectedReport.getUserId());
+                if (user != null && user.getEmail() != null && !user.getEmail().isEmpty()) {
+                    String subject = "Update Status Laporan #" + selectedReport.getId();
+                    String message = "Halo " + user.getFullName() + ",\n\n" +
+                                     "Status laporan Anda dengan judul \"" + selectedReport.getTitle() + "\" telah diperbarui menjadi: " + newStatus + ".\n\n" +
+                                     "Tanggapan Admin:\n" + (response.isEmpty() ? "-" : response) + "\n\n" +
+                                     "Terima kasih,\nTim Izin Lapor";
+                    EmailUtil.sendNotification(user.getEmail(), subject, message);
+                }
 
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Status dan tanggapan berhasil diperbarui.");
                 loadReports();

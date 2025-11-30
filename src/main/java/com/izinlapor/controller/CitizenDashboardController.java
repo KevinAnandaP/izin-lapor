@@ -65,6 +65,7 @@ public class CitizenDashboardController {
     // Edit Profile Tab
     @FXML private TextField editNikField;
     @FXML private TextField editUsernameField;
+    @FXML private TextField editEmailField;
     @FXML private TextField editNameField;
     @FXML private TextField editPhoneField;
     @FXML private TextArea editAddressField;
@@ -133,6 +134,7 @@ public class CitizenDashboardController {
         if (user != null) {
             editNikField.setText(user.getNik());
             editUsernameField.setText(user.getUsername());
+            editEmailField.setText(user.getEmail());
             editNameField.setText(user.getFullName());
             editPhoneField.setText(user.getPhone());
             editAddressField.setText(user.getAddress());
@@ -169,15 +171,17 @@ public class CitizenDashboardController {
         User user = SessionManager.getCurrentUser();
         if (user != null) {
             String newName = editNameField.getText();
+            String newEmail = editEmailField.getText();
             String newPhone = editPhoneField.getText();
             String newAddress = editAddressField.getText();
 
-            if (newName.isEmpty() || newPhone.isEmpty() || newAddress.isEmpty()) {
+            if (newName.isEmpty() || newEmail.isEmpty() || newPhone.isEmpty() || newAddress.isEmpty()) {
                 showAlert("Error", "Semua field harus diisi!");
                 return;
             }
 
             user.setFullName(newName);
+            user.setEmail(newEmail);
             user.setPhone(newPhone);
             user.setAddress(newAddress);
             

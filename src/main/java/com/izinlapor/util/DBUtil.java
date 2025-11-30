@@ -29,6 +29,7 @@ public class DBUtil {
                     "full_name VARCHAR(100) NOT NULL," +
                     "username VARCHAR(50) UNIQUE NOT NULL," +
                     "password VARCHAR(255) NOT NULL," +
+                    "email VARCHAR(100)," +
                     "role ENUM('WARGA', 'ADMIN') NOT NULL DEFAULT 'WARGA'," +
                     "phone VARCHAR(20)," +
                     "address TEXT," +
@@ -37,7 +38,13 @@ public class DBUtil {
                     ")";
             stmt.executeUpdate(createUsers);
             
-            // Attempt to add photo_profile column if it doesn't exist (for existing databases)
+            // Attempt to add email column if it doesn't exist
+            try {
+                stmt.executeUpdate("ALTER TABLE users ADD COLUMN email VARCHAR(100) AFTER password");
+            } catch (SQLException e) {
+
+            }
+            
             try {
                 stmt.executeUpdate("ALTER TABLE users ADD COLUMN photo_profile VARCHAR(255)");
             } catch (SQLException e) {

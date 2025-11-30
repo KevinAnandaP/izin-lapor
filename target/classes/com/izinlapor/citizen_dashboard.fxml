@@ -223,6 +223,8 @@
                                             <Font name="System Bold" size="16.0" />
                                         </font>
                                     </Label>
+                                    <Label text="Email" />
+                                    <TextField fx:id="editEmailField" />
                                     <Label text="Nama Lengkap" />
                                     <TextField fx:id="editNameField" />
                                     <Label text="Nomor Telepon" />
