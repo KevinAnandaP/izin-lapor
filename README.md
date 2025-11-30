@@ -16,6 +16,7 @@ Aplikasi desktop berbasis JavaFX yang dirancang untuk memudahkan masyarakat dala
 ### Admin
 *   **Dashboard**
 *   **Kelola Pengaduan**
+*   **Notifikasi Email**
 *   **Update Status**
 *   **Diskusi/Chat**
 *   **Kelola User**
