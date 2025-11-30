@@ -2,7 +2,7 @@
 
 Aplikasi desktop berbasis JavaFX yang dirancang untuk memudahkan masyarakat dalam menyampaikan pengaduan atau laporan terkait infrastruktur, pelayanan publik, dan keamanan lingkungan kepada pihak berwenang.
 
-## Anggota Kelompok [Nomor Kelompok]
+## Anggota Kelompok
 1. Kevin Ananda Putra - L0124103
 2. Muhammad Alfin Hasan - L0124105
 3. Rafif Adyatma Setyawan - L0124117
