@@ -1,0 +1,16 @@
+# Maven build output
+target/
+
+# User generated content (uploads)
+user_data/
+
+# IDE files (VS Code, Eclipse, IntelliJ)
+.vscode/
+.idea/
+*.iml
+.settings/
+.classpath
+.project
+.factorypath
+*.log
+.DS_Store
